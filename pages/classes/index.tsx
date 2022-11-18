@@ -12,7 +12,7 @@ function ClassList({ gymList }) {
   const showGymList = () => {
     return gyms.map((gym: Classes) => {
       return (
-        <Button>
+        <Button variant="contained">
           <Link href={`/classes/${encodeURIComponent(gym.id)}`}>
             {gym.name}
           </Link>

@@ -7,7 +7,7 @@ function ClassDetails({ gym }: any) {
   return (
     <>
       <div>{gym.name}</div>
-      <Button>
+      <Button variant="contained">
         <Link href={`/classes/reserve/${encodeURIComponent(gym.id)}`}>
           예약하기
         </Link>
