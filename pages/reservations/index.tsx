@@ -51,4 +51,4 @@ export async function getServerSideProps() {
   };
 }
 
-export default ReservationsList;
+export default MyReservationsList;
