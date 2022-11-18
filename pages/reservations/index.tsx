@@ -12,7 +12,7 @@ function MyReservationsList({ gymList }) {
   const showGymList = () => {
     return gyms.map((gym: Classes) => {
       return (
-        <Button>
+        <Button key={gym.id}>
           <Link href={`/classes/${encodeURIComponent(gym.id)}`}>
             {gym.name}
           </Link>

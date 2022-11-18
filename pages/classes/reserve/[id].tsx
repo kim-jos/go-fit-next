@@ -55,7 +55,7 @@ function MakeReservation({ classAvailability, classId }) {
             >
               {classTimes.length
                 ? classTimes.map((classTime) => {
-                    return <option>{classTime.time}</option>;
+                    return <option key={classTime.id}>{classTime.time}</option>;
                   })
                 : null}
             </Select>
