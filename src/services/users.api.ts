@@ -1,6 +1,6 @@
-import { usersTable } from "../utils/database.table.names";
 import { Users } from "../utils/database/database.entities";
-import { supabaseClient } from "../utils/supabase.key";
+import { usersTable } from "../utils/database/database.table.names";
+import { supabaseClient } from "../utils/database/supabase.key";
 
 export async function getCurrUser(currUser): Promise<Users[]> {
   let { data, error } = await supabaseClient

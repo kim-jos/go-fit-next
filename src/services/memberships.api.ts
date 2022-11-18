@@ -1,6 +1,6 @@
-import { membershipsTable } from "../utils/database.table.names";
 import { Memberships } from "../utils/database/database.entities";
-import { supabaseClient } from "../utils/supabase.key";
+import { membershipsTable } from "../utils/database/database.table.names";
+import { supabaseClient } from "../utils/database/supabase.key";
 
 export async function getMemberships(): Promise<Memberships[]> {
   let { data, error } = await supabaseClient
