@@ -25,14 +25,18 @@ export default function Home() {
   return (
     <div>
       <div>홈페이지</div>
-      {data?.user && (
+      {data ? (
         <div>
           <div>{data?.user?.name}</div>
           <div>{data?.user?.email}</div>
         </div>
+      ) : (
+        <div>not logged in</div>
       )}
 
-      <button onClick={() => setIsActive(true)}>테스트 버튼</button>
+      <Button variant="contained" onClick={() => setIsActive(true)}>
+        테스트 버튼
+      </Button>
       <ModalBase active={isActive} closeEvent={onClickModalOff}>
         <Stack>
           {/* closeEvent={onClickModalOff} title="Welcome Back" */}

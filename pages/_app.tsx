@@ -5,9 +5,9 @@ import "@fontsource/roboto/700.css";
 import { SessionProvider } from "next-auth/react";
 import { AppProps } from "next/app";
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <SessionProvider session={pageProps.session}>
+    <SessionProvider session={session}>
       <Component {...pageProps} />
     </SessionProvider>
   );

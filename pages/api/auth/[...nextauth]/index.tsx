@@ -1,46 +1,41 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import Google from "next-auth/providers/google";
-import Kakao from "next-auth/providers/kakao";
-import { supabaseClient } from "../../../../src/utils/database/supabase.key";
+import { signInWithEmail } from "../../../../src/services/auth.api";
 
 const options = {
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-    }),
-    // Apple({
+    // Google({
     //   clientId: process.env.GOOGLE_ID,
     //   clientSecret: process.env.GOOGLE_SECRET,
     // }),
-    Kakao({
-      //Naver
-      clientId: process.env.KAKAO_ID,
-      clientSecret: process.env.KAKAO_SECRET,
-    }),
+    // Apple({
+    //   clientId: process.env.APPLE_ID,
+    //   clientSecret: process.env.APPLE_SECRET,
+    // }),
+    // Kakao({
+    //   clientId: process.env.KAKAO_ID,
+    //   clientSecret: process.env.KAKAO_SECRET,
+    // }),
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
-      name: "Go-fit account",
+      name: "Go Fit",
       credentials: {
-        username: {
-          label: "Username",
+        email: {
+          label: "Email",
           type: "text",
-          placeholder: "email을 입력하세요",
+          placeholder: "Email을 입력하세요",
         },
-        password: { label: "Password", type: "password" },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "비밀번호을 입력하세요",
+        },
       },
+
       async authorize(credentials, req) {
-        console.log(credentials);
-        // Add logic here to look up the user from the credentials supplied
-        // const user = { id: 1, name: "J Smith", email: "jsmith@example.com" };
-        let { user, session, error } = await supabaseClient.auth.signIn({
-          email: credentials?.username,
-          password: credentials?.password,
-        });
-        console.log(user);
-        console.log(session);
-        user["name"] = session.access_token;
+        const { user, session } = await signInWithEmail(credentials);
+        user["access_token"] = session.access_token;
+        console.log("login user: ", user);
+        console.log("login session: ", session);
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
           return user;

@@ -1,3 +1,5 @@
+import { Role } from "../role.enum";
+
 export class Classes {
   id: number;
   name: string;
@@ -35,10 +37,10 @@ export class ReservationTransactions {
 export class Users {
   id: number;
   name: string;
-  role: string;
+  role: Role;
   email: string;
   curr_credits: number;
-  is_influencer: boolean;
+  phone_number: string;
 }
 
 export class Memberships {
