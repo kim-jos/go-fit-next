@@ -13,17 +13,6 @@ export async function getCurrUser(currUser): Promise<Users[]> {
   return data;
 }
 
-export async function getInfluencers(): Promise<Users[]> {
-  let { data, error } = await supabaseClient
-    .from<Users>(usersTable)
-    .select("*")
-    .eq("is_influencer", true);
-
-  if (error) throw new Error(`GET / ${usersTable} error: ${error.message}`);
-
-  return data;
-}
-
 export async function createUser(data: Partial<Users>) {
   const { error } = await supabaseClient.from(usersTable).insert([
     // { data: "someValue", other_column: "otherValue" }
