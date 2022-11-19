@@ -8,22 +8,13 @@ export default function Home() {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const { data, status } = useSession();
-  const onClickCodeListOn = () => {
-    setIsActive(true);
-  };
-
-  const onKeyPress = (e) => {
-    if (e.key == "Enter") {
-      console.log("logined");
-    }
-  };
 
   const onClickModalOff = () => {
     setIsActive(false);
   };
 
   return (
-    <div>
+    <>
       <div>홈페이지</div>
       {data ? (
         <div>
@@ -35,7 +26,7 @@ export default function Home() {
       )}
 
       <Button variant="contained" onClick={() => setIsActive(true)}>
-        테스트 버튼
+        로그인
       </Button>
       <ModalBase active={isActive} closeEvent={onClickModalOff}>
         <Stack>
@@ -53,6 +44,6 @@ export default function Home() {
           </div>
         </Stack>
       </ModalBase>
-    </div>
+    </>
   );
 }
