@@ -1,8 +1,19 @@
 {
-  "h1": "A simple example",
-  "change-locale": "Change {{what}} locale",
-  "to-second-page": "To second page",
-  "error-with-status": "A  error occurred on server",
-  "error-without-status": "An error occurred on the server",
-  "title": "Home | next-i18next"
+  "fitness": "Fitness Centers",
+  "reservation": "Reservations",
+  "membership": "Membership",
+  "more": "More",
+  "exercise-type": "Exercise Type",
+  "duration": "Duration",
+  "preparation": "Preparation",
+  "credits-required": "Credits Required",
+  "hours": "Hours",
+  "misc": "Misc.",
+  "reserve": "Make Reservation",
+  "select-date": "Pick Date",
+  "select-time": "Pick Time",
+  "faq": "FAQ",
+  "delete-acc": "Delete Account",
+  "signout": "Sign Out",
+  "update-profile": "Update Profile"
 }

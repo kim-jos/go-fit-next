@@ -1,8 +1,19 @@
 {
-  "h1": "간단한 예시",
-  "change-locale": "로칼 바꿔라",
-  "to-second-page": "두번 째 페이지",
-  "error-with-status": "서버 에러",
-  "error-without-status": "서버 에러 상태 없이",
-  "title": "제목이다"
+  "fitness": "운동시설",
+  "reservation": "예약현황",
+  "membership": "멤버십",
+  "more": "더 보기",
+  "exercise-type": "수업 유형",
+  "duration": "소요 시간",
+  "preparation": "수업 준비불",
+  "credits-required": "소요 크레딧",
+  "hours": "운영 시간",
+  "misc": "기타",
+  "reserve": "예약하기",
+  "select-date": "날짜 선택",
+  "select-time": "시간 선택",
+  "faq": "자주 묻는 질문",
+  "delete-acc": "계정 삭제",
+  "signout": "로그아웃",
+  "update-profile": "프로필 수정"
 }
