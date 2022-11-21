@@ -1,11 +1,18 @@
+import { differenceInHours } from "date-fns";
+
 export function isValidCancelation(reservedDate: Date, time) {
-  if (isCancelationOneDayBefore()) {
-    return true;
+  if (!isCancelationTheDayBefore(reservedDate)) {
+    return false;
   }
-  // current time is not after reserved time + date
   return true;
 }
 
-function isCancelationOneDayBefore() {
+function isCancelationTheDayBefore(reservedDate) {
+  const cancelationTime = new Date(Date.now());
+
+  // reservation: at least 24 hour before class
+  if (differenceInHours(reservedDate, cancelationTime) < 24) {
+    return false; // time passed
+  }
   return true;
 }
