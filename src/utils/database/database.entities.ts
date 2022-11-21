@@ -28,9 +28,9 @@ export class ClassAvailability {
 
 export class ReservationTransactions {
   id: number;
-  class_id: Partial<Classes>; // foreign key
-  class_time: Partial<ClassAvailability>; // foreign key
-  user_id: Partial<Users>; // foreign key
+  class_id: number; //Partial<Classes>; // foreign key
+  class_time: string; // Partial<ClassAvailability>; // foreign key
+  user_id: number; //Partial<Users>; // foreign key
   reservation_date: Date;
 }
 

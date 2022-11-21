@@ -32,14 +32,7 @@ export async function createReservation(
   data: Partial<ReservationTransactions>,
   currUser
 ) {
-  const notEnoughCredits = await insufficientCredits(
-    currUser,
-    data.class_id.id
-  );
-  if (notEnoughCredits) {
-    // TODO: add user id
-    return "Not Enough Credits";
-  }
+  await subtractCredits(currUser, data.class_id);
 
   const { error } = await supabaseClient
     .from(reservationTransactionTable)
@@ -49,6 +42,9 @@ export async function createReservation(
     ]);
 
   if (error) {
+    console.log(error.details);
+    console.log(error.message);
+    console.log(error.hint);
     throw new Error(
       `POST / ${reservationTransactionTable} error: ${error.message}`
     );
@@ -57,18 +53,15 @@ export async function createReservation(
   return "Reservation Successful";
 }
 
-export async function insufficientCredits(
-  userId: number,
-  classId: number
-): Promise<boolean> {
+export async function subtractCredits(userId: number, classId: number) {
   const userData = await supabaseClient
     .from<Users>(usersTable)
-    .select("*")
+    .select("curr_credits")
     .eq("id", userId);
 
   const classData = await supabaseClient
     .from<Classes>(classesTable)
-    .select("*")
+    .select("credits_required")
     .eq("id", classId);
 
   const user = userData.data;
@@ -88,8 +81,19 @@ export async function insufficientCredits(
     );
   }
 
-  if (user[0].curr_credits < classInstance[0].credits_required) {
-    return true;
+  const userCredits = user[0].curr_credits;
+  const creditsRequired = classInstance[0].credits_required;
+  if (userCredits < creditsRequired) {
+    throw new Error("Not Enough Credits");
   }
-  return false;
+
+  const remainingCredits = userCredits - creditsRequired;
+  let updated = await supabaseClient
+    .from<Users>(usersTable)
+    .update({ curr_credits: remainingCredits })
+    .eq("id", userId);
+
+  if (updated.error) {
+    throw new Error(updated.error.message);
+  }
 }

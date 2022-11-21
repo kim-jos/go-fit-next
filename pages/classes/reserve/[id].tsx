@@ -1,10 +1,17 @@
-import { Button, Select } from "@mui/material";
+import {
+  Button,
+  Divider,
+  List,
+  ListItemButton,
+  ListItemText,
+  TextField,
+} from "@mui/material";
+import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { getDay } from "date-fns";
 import { Form, Formik } from "formik";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
 import { getClassAvailability } from "../../../src/services/classes.api";
-import { isValidReservationDate } from "../../../src/utils/validation/reservation.validation";
 import styles from "../../../styles/Home.module.css";
 
 function MakeReservation({ classAvailability, classId }) {
@@ -25,53 +32,70 @@ function MakeReservation({ classAvailability, classId }) {
   };
 
   const handleSubmit = (date, time) => {
-    if (isValidReservationDate(reservedDate, time)) {
-      throw new Error("Date is invalid");
-    }
-    alert(`handleSubmit: ${date}, ${time}`);
+    // if (!isValidReservationDate(reservedDate, time)) {
+    //   throw new Error("Date is invalid");
+    // }
+    console.log(`handleSubmit: ${date}, ${time}`);
     // createReservation({ reservation_date: date, class_time: time }, 1);
   };
 
   return (
     <>
-      <main className={styles.container}>
+      <div className={styles.container}>
+        <Button>{`${reservedDate}`}</Button>
         <Formik
           initialValues={{ date: reservedDate, time: inputTime }}
           onSubmit={async (values) => {
-            // alert(`values: ${values.date}, ${values.time}`);
-
             handleSubmit(values.date, values.time);
           }}
         >
           <Form>
-            <DatePicker
-              selected={reservedDate}
-              onChange={(date) => getClassAvailableTimes(date)}
-            />
-            <Select
-              placeholder="시간 선택"
-              onSelect={(time) => setInputTime(time)}
-              // onChange={(time) => setClassTimes(time)}
-            >
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              {/* <DatePicker
+                selected={reservedDate}
+                onChange={(date) => getClassAvailableTimes(date)}
+              /> */}
+              <MobileDatePicker
+                label="날짜 선택"
+                inputFormat="MM/dd/yyyy"
+                value={reservedDate}
+                onChange={(date) => {
+                  getClassAvailableTimes(date);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            <div></div>
+            <List>
               {classTimes.length
                 ? classTimes.map((classTime) => {
-                    return <option key={classTime.id}>{classTime.time}</option>;
+                    return (
+                      <>
+                        <ListItemButton
+                          component="a"
+                          key={classTime.id}
+                          onClick={(time) => setInputTime(time)}
+                        >
+                          <ListItemText>{classTime.time}</ListItemText>
+                        </ListItemButton>
+                        <Divider />
+                      </>
+                    );
                   })
                 : null}
-            </Select>
-            <Button type="submit">예약하기</Button>
+            </List>
+            <Button variant="contained" type="submit">
+              예약하기
+            </Button>
           </Form>
         </Formik>
-      </main>
+      </div>
     </>
   );
 }
 
 export async function getServerSideProps(context: any) {
-  const currDate = new Date(Date.now());
-
   const classId = context.params.id;
-  // const currWeekday = getDay(currDate);
   const currWeekday = 1;
   const classAvailability = await getClassAvailability(classId, currWeekday);
 
