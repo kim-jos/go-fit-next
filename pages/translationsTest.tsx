@@ -15,10 +15,10 @@ export default function Translations({ user }) {
       <p>{t("error-without-status")}</p>
       <p>{t("title")}</p>
       <div>
-        <Link href="/translations" locale="en">
+        <Link href="/translationsTest" locale="en">
           <button>영어</button>
         </Link>
-        <Link href="/translations" locale="ko">
+        <Link href="/translationsTest" locale="ko">
           <button>한국어</button>
         </Link>
       </div>
