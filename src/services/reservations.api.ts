@@ -24,6 +24,26 @@ export async function getUserReservations(
   return data;
 }
 
+export async function getReservations(): Promise<ReservationTransactions[]> {
+  const currDate = new Date(Date.now());
+  const thisWeek = new Date();
+  thisWeek.setDate(thisWeek.getDate() + 6);
+
+  const { data, error } = await supabaseClient
+    .from(reservationTransactionTable)
+    .select("*")
+    .gte("reservation_date", currDate.toISOString())
+    .lt("reservation_date", thisWeek.toISOString());
+
+  if (error) {
+    throw new Error(
+      `GET / ${reservationTransactionTable} error: ${error.message}`
+    );
+  }
+
+  return data;
+}
+
 export async function createReservation(
   data: Partial<ReservationTransactions>,
   currUser

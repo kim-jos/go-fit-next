@@ -33,7 +33,7 @@ export async function getClassAvailability(
 ): Promise<Partial<ClassAvailability>[]> {
   let { data, error } = await supabaseClient
     .from(classAvailabilityTable)
-    .select("time, info")
+    .select("time, info, id")
     .eq("class_id", classId)
     .eq("weekday", weekday)
     .order("time", { ascending: true });
