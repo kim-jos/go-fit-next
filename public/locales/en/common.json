@@ -15,5 +15,9 @@
   "faq": "FAQ",
   "delete-acc": "Delete Account",
   "signout": "Sign Out",
-  "update-profile": "Update Profile"
+  "update-profile": "Update Profile",
+  "invite": "Invite Friend",
+  "terms-of-service": "Terms of Service",
+  "contact-us": "Contact",
+  "credits": "Remaining Credits"
 }
