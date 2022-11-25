@@ -42,7 +42,7 @@ function ClassList({ gyms }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const gyms = await getClassesList();
   return {
     props: { gyms },

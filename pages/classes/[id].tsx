@@ -1,7 +1,8 @@
 import { Button, Rating, Typography } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
-import { getClass } from "../../src/services/classes.api";
+import { getClass, getClassesList } from "../../src/services/classes.api";
+import { Classes } from "../../src/utils/database/database.entities";
 
 function ClassDetails({ gym }) {
   let [rating, setRating] = useState(0);
@@ -27,9 +28,20 @@ function ClassDetails({ gym }) {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  const id = context.params.id;
-  const gym = await getClass(id);
+export async function getStaticPaths() {
+  const gyms = await getClassesList();
+  const paths = gyms.map((gym: Classes) => ({
+    params: { id: `${gym.id}` },
+  }));
+
+  return {
+    paths,
+    fallback: false,
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const gym = await getClass(Number(params.id));
   return {
     props: { gym },
   };
