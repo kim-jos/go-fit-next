@@ -19,6 +19,8 @@ function MakeReservation({ classAvailability, classId }) {
   const [reservedDate, setReserveDate] = useState(currDate);
   const [classTimes, setClassTimes] = useState(classAvailability);
   const [inputTime, setInputTime] = useState(classAvailability[0]);
+  const twoWeeksFromNow = new Date();
+  twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 13);
 
   const getClassAvailableTimes = async (date) => {
     const reservationDate = new Date(date);
@@ -51,11 +53,9 @@ function MakeReservation({ classAvailability, classId }) {
         >
           <Form>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              {/* <DatePicker
-                selected={reservedDate}
-                onChange={(date) => getClassAvailableTimes(date)}
-              /> */}
               <MobileDatePicker
+                minDate={currDate}
+                maxDate={twoWeeksFromNow}
                 label="날짜 선택"
                 inputFormat="MM/dd/yyyy"
                 value={reservedDate}
