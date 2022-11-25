@@ -1,14 +1,11 @@
 import { Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { getClassesList } from "../../src/services/classes.api";
 import { Classes } from "../../src/utils/database/database.entities";
 import styles from "../../styles/Home.module.css";
 
-function ClassList({ gymList }) {
-  let [gyms, setGyms] = useState(gymList);
-
+function ClassList({ gyms }) {
   const showGymList = () => {
     return gyms.map((gym: Classes) => {
       return (
@@ -46,9 +43,9 @@ function ClassList({ gymList }) {
 }
 
 export async function getServerSideProps() {
-  const gymList = await getClassesList();
+  const gyms = await getClassesList();
   return {
-    props: { gymList },
+    props: { gyms },
   };
 }
 

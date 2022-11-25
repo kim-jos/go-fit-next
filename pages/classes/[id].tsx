@@ -1,9 +1,10 @@
-import { Button } from "@mui/material";
+import { Button, Rating, Typography } from "@mui/material";
 import Link from "next/link";
+import { useState } from "react";
 import { getClass } from "../../src/services/classes.api";
 
-function ClassDetails({ gym }: any) {
-  console.log(gym);
+function ClassDetails({ gym }) {
+  let [rating, setRating] = useState(0);
   return (
     <>
       <div>{gym.name}</div>
@@ -12,6 +13,16 @@ function ClassDetails({ gym }: any) {
           예약하기
         </Link>
       </Button>
+
+      <Typography component="legend">리뷰 남겨주세요!</Typography>
+      <Rating
+        name="simple-controlled"
+        value={rating}
+        precision={0.5}
+        onChange={(event, newValue) => {
+          setRating(newValue);
+        }}
+      />
     </>
   );
 }

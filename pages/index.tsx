@@ -33,7 +33,11 @@ export default function Home() {
           {/* closeEvent={onClickModalOff} title="Welcome Back" */}
           <div>
             <Button
-              onClick={() => signIn("CredentialsProvider")}
+              onClick={() =>
+                signIn("CredentialsProvider", {
+                  callbackUrl: "http://localhost:3000/classes",
+                })
+              }
               color="primary"
             >
               Email Log in
