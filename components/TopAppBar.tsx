@@ -9,7 +9,7 @@ export default function TopAppBar() {
       <AppBar component="nav">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            Go Fit
           </Typography>
         </Toolbar>
       </AppBar>
