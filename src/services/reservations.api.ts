@@ -1,8 +1,4 @@
-import {
-  Classes,
-  ReservationTransactions,
-  Users,
-} from "../utils/database/database.entities";
+import { ReservationTransactions } from "../utils/database/database.entities";
 import {
   classesTable,
   reservationTransactionTable,
@@ -14,7 +10,7 @@ export async function getUserReservations(
   currUser
 ): Promise<ReservationTransactions[]> {
   const { data, error } = await supabaseClient
-    .from<ReservationTransactions>(reservationTransactionTable)
+    .from(reservationTransactionTable)
     .select("*")
     .eq("user_id", currUser) // TODO: add logged in user instance
     .order("reservation_date", { ascending: true });
@@ -55,12 +51,12 @@ export async function createReservation(
 
 export async function subtractCredits(userId: number, classId: number) {
   const userData = await supabaseClient
-    .from<Users>(usersTable)
+    .from(usersTable)
     .select("curr_credits")
     .eq("id", userId);
 
   const classData = await supabaseClient
-    .from<Classes>(classesTable)
+    .from(classesTable)
     .select("credits_required")
     .eq("id", classId);
 
@@ -89,7 +85,7 @@ export async function subtractCredits(userId: number, classId: number) {
 
   const remainingCredits = userCredits - creditsRequired;
   let updated = await supabaseClient
-    .from<Users>(usersTable)
+    .from(usersTable)
     .update({ curr_credits: remainingCredits })
     .eq("id", userId);
 

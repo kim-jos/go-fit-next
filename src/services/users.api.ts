@@ -4,7 +4,7 @@ import { supabaseClient } from "../utils/database/supabase.key";
 
 export async function getCurrUser(currUser): Promise<Users[]> {
   let { data, error } = await supabaseClient
-    .from<Users>(usersTable)
+    .from(usersTable)
     .select("*")
     .eq("id", currUser); // TODO: add logged in user instance
 
