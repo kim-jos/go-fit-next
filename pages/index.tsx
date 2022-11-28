@@ -1,7 +1,7 @@
 import { Button, Stack } from "@mui/material";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
-import ModalBase from "../components/ModalBase";
+import ModalBase from "../components/Modal/Base";
 
 export default function Home() {
   const [isActive, setIsActive] = useState(false);
