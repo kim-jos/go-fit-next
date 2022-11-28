@@ -1,51 +1,52 @@
-import { Button } from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { IconButton, TextField } from "@mui/material";
+import { useState } from "react";
+import CardListHorizontal from "../../components/CardHorizontal/CardListHorizontal";
+import CardListVertical from "../../components/CardVertical/CardListVertical";
 import { getClassesList } from "../../src/services/classes.api";
 import { Classes } from "../../src/utils/database/database.entities";
 import styles from "../../styles/Home.module.css";
 
-function ClassList({ gyms }) {
-  const showGymList = () => {
-    return gyms.map((gym: Classes) => {
-      return (
-        <Button key={gym.id} variant="contained">
-          <Link href={`/classes/${encodeURIComponent(gym.id)}`}>
-            {gym.name}
-          </Link>
-        </Button>
-      );
-    });
+interface Gym {
+  gymList: Classes[];
+}
+function ClassList({ gymList }: Gym) {
+  const [gyms, setGyms] = useState(gymList);
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 4,
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>
-        Welcome to <a href="https://nextjs.org">Next.js!</a>
-      </h1>
-
-      <main className={styles.main}>{showGymList()}</main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <TextField
+        fullWidth
+        sx={{
+          borderRadius: 20,
+          marginBottom: "10px",
+        }}
+        InputProps={{
+          endAdornment: (
+            <IconButton>
+              <SearchOutlinedIcon />
+            </IconButton>
+          ),
+        }}
+      />
+      <CardListHorizontal gyms={gyms} />
+      <CardListVertical />
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const gyms = await getClassesList();
+  const gymList = await getClassesList();
   return {
-    props: { gyms },
+    props: { gymList },
   };
 }
 

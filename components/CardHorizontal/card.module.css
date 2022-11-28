@@ -1,0 +1,24 @@
+.cardWrapper {
+    box-sizing: border-box;
+    padding: 15px;
+    width: 150px;
+    height: 225px;
+    border-radius: 15px;
+    border: 1px solid lightgray;
+    cursor: pointer;
+}
+
+.swipeWrapper {
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.themeIcon {
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+}
