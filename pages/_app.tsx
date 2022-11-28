@@ -8,12 +8,17 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import BottomNav from "../components/BottomNav";
 import TopAppBar from "../components/TopAppBar";
+import { kakaoKey } from "../src/utils/keys";
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <Head>
         <link rel="shortcut icon" href="/GoFit_Logo.svg" />
+        <script
+          type="text/javascript"
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoKey}&libraries=services`}
+        />
       </Head>
       <TopAppBar />
       <Component {...pageProps} />
