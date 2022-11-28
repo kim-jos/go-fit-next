@@ -8,7 +8,6 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import BottomNav from "../components/BottomNav";
 import TopAppBar from "../components/TopAppBar";
-import Script from "next/script";
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
