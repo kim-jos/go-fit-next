@@ -1,80 +1,52 @@
-import { Button } from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
-
-import { TextField, IconButton } from '@mui/material';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import Card from '../../components/Card/index';
-import ListCard from '../../components/ListCard/index';
-
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { IconButton, TextField } from "@mui/material";
 import { useState } from "react";
-
+import CardListHorizontal from "../../components/CardHorizontal/CardListHorizontal";
+import CardListVertical from "../../components/CardVertical/CardListVertical";
 import { getClassesList } from "../../src/services/classes.api";
 import { Classes } from "../../src/utils/database/database.entities";
 import styles from "../../styles/Home.module.css";
 
-
-
-function ClassList({ gymList }) {
+interface Gym {
+  gymList: Classes[];
+}
+function ClassList({ gymList }: Gym) {
   const [gyms, setGyms] = useState(gymList);
-
-  const contents = {
-    themeIcon: null,
-    background: null,
-    title: '가나다',
-    address: '대야동',
-    credit: 3
-  }
 
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 4,
-    slidesToScroll: 4
-  };
-
-
-function ClassList({ gyms }) {
-
-  const showGymList = () => {
-    return gyms.map((gym: Classes) => {
-      return (
-        <Button key={gym.id} variant="contained">
-          <Link href={`/classes/${encodeURIComponent(gym.id)}`}>
-            {gym.name}
-          </Link>
-        </Button>
-      );
-    });
+    slidesToScroll: 4,
   };
 
   return (
     <div className={styles.container}>
-    <TextField
-      fullWidth
-      sx={{
-        borderRadius: 20,
-        marginBottom: '10px'
-      }}
-
-      InputProps={{
-      endAdornment: (
-          <IconButton>
-            <SearchOutlinedIcon />
-          </IconButton>
-      ),
-    }}/>
-    <Card gyms={gyms}/>
-    <ListCard/>
+      <TextField
+        fullWidth
+        sx={{
+          borderRadius: 20,
+          marginBottom: "10px",
+        }}
+        InputProps={{
+          endAdornment: (
+            <IconButton>
+              <SearchOutlinedIcon />
+            </IconButton>
+          ),
+        }}
+      />
+      <CardListHorizontal gyms={gyms} />
+      <CardListVertical />
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const gyms = await getClassesList();
+  const gymList = await getClassesList();
   return {
-    props: { gyms },
+    props: { gymList },
   };
 }
 
