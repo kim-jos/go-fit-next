@@ -5,13 +5,17 @@ import "@fontsource/roboto/700.css";
 import { SessionProvider } from "next-auth/react";
 import { appWithTranslation } from "next-i18next";
 import { AppProps } from "next/app";
+import Head from "next/head";
 import BottomNav from "../components/BottomNav";
-import MainNav from "../components/MainNav";
+import TopAppBar from "../components/TopAppBar";
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <MainNav />
+      <Head>
+        <link rel="shortcut icon" href="/GoFit_Logo.svg" />
+      </Head>
+      <TopAppBar />
       <Component {...pageProps} />
       <BottomNav />
     </SessionProvider>

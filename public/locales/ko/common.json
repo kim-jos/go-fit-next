@@ -15,5 +15,9 @@
   "faq": "자주 묻는 질문",
   "delete-acc": "계정 삭제",
   "signout": "로그아웃",
-  "update-profile": "프로필 수정"
+  "update-profile": "프로필 수정",
+  "invite": "친구초대",
+  "terms-of-service": "이용약관 및 정책",
+  "contact-us": "문의",
+  "credits": "보유 크레딧 수"
 }

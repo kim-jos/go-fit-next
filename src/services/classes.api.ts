@@ -9,9 +9,7 @@ import {
 import { supabaseClient } from "../utils/database/supabase.key";
 
 export async function getClassesList(): Promise<Classes[]> {
-  let { data, error } = await supabaseClient
-    .from<Classes>(classesTable)
-    .select("*");
+  let { data, error } = await supabaseClient.from(classesTable).select("*");
 
   if (error) throw new Error(`GET / ${classesTable} error: ${error.message}`);
   if (!data?.length) throw new Error("Data is empty");
@@ -20,7 +18,7 @@ export async function getClassesList(): Promise<Classes[]> {
 
 export async function getClass(id: number): Promise<Classes> {
   let { data, error } = await supabaseClient
-    .from<Classes>(classesTable)
+    .from(classesTable)
     .select("*")
     .eq("id", id);
 
@@ -32,10 +30,10 @@ export async function getClass(id: number): Promise<Classes> {
 export async function getClassAvailability(
   classId: number,
   weekday: number
-): Promise<ClassAvailability[]> {
+): Promise<Partial<ClassAvailability>[]> {
   let { data, error } = await supabaseClient
-    .from<ClassAvailability>(classAvailabilityTable)
-    .select("time, info")
+    .from(classAvailabilityTable)
+    .select("time, info, id")
     .eq("class_id", classId)
     .eq("weekday", weekday)
     .order("time", { ascending: true });

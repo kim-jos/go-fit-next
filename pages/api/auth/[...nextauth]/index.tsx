@@ -3,6 +3,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { signInWithEmail } from "../../../../src/services/auth.api";
 
 const options = {
+  // pages: {
+  //   signIn: "/auth/signin",
+  // },
   providers: [
     // Google({
     //   clientId: process.env.GOOGLE_ID,

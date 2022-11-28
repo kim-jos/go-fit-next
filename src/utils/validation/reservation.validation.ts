@@ -10,8 +10,8 @@ export function isValidReservationDate(reservedDate: Date) {
 
 function isReservationBeforeClass(reservedDate: Date) {
   const currDate = new Date(Date.now());
-  // reservation: at least one hour before class
-  if (differenceInMinutes(reservedDate, currDate) < 60) {
+  // reservation: at least one day before class
+  if (differenceInMinutes(reservedDate, currDate) < 60 * 24) {
     return false; // time passed
   }
   return true;

@@ -1,94 +1,85 @@
-import AddIcon from "@mui/icons-material/Add";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import ChatIcon from "@mui/icons-material/Chat";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Grid, styled, Typography } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Fab from "@mui/material/Fab";
-import IconButton from "@mui/material/IconButton";
-import Toolbar from "@mui/material/Toolbar";
+import PersonIcon from "@mui/icons-material/Person";
+import { AppBar, Grid, IconButton, Typography } from "@mui/material";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import * as React from "react";
-
-const StyledFab = styled(Fab)({
-  //   position: "absolute",
-  //   zIndex: 1,
-  //   top: -30,
-  //   left: 0,
-  //   right: 0,
-  //   margin: "0 auto",
-  margin: 0,
-  top: "auto",
-  right: 30,
-  bottom: 100,
-  left: "auto",
-  position: "fixed",
-});
+import { useState } from "react";
+import palette from "../styles/palette";
 
 export default function BottomAppBar() {
+  const [value, setValue] = useState(0);
+  const router = useRouter();
+  const activeColor = palette.secondary.main;
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
-    <React.Fragment>
-      <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
-        <Toolbar>
-          <Grid container spacing={1}>
-            <Grid
-              xs={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              direction="column"
-              item
-            >
-              <IconButton color="inherit" aria-label="open drawer">
+    <AppBar position="fixed" color="default" sx={{ top: "auto", bottom: 0 }}>
+      <style jsx>{`
+        .active {
+          color: ${activeColor};
+        }
+      `}</style>
+      <Grid container>
+        <Grid
+          container
+          xs={4}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          direction="column"
+          item
+        >
+          <IconButton color="inherit">
+            <Link href="/classes" replace={false}>
+              <div className={router.pathname === "/classes" ? "active" : ""}>
                 <FitnessCenterIcon />
-              </IconButton>
-              <Typography variant="subtitle2">Fitness</Typography>
-            </Grid>
-            <Grid
-              xs={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              direction="column"
-              item
-            >
-              <IconButton color="inherit">
-                <CheckBoxIcon />
-              </IconButton>
-              <Typography variant="subtitle2">Reservations</Typography>
-            </Grid>
-            <Grid
-              xs={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              direction="column"
-              item
-            >
-              <IconButton color="inherit">
-                <AddShoppingCartIcon />
-              </IconButton>
-              <Typography variant="subtitle2">Membership</Typography>
-            </Grid>
-            <Grid
-              xs={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              direction="column"
-              item
-            >
-              <IconButton color="inherit">
-                <MoreHorizIcon />
-              </IconButton>
-              <Typography variant="subtitle2">More</Typography>
-            </Grid>
-          </Grid>
-        </Toolbar>
-      </AppBar>
-      <StyledFab color="secondary" aria-label="add">
-        <AddIcon />
-      </StyledFab>
-    </React.Fragment>
+                <Typography variant="subtitle2">운동시설</Typography>
+              </div>
+            </Link>
+          </IconButton>
+        </Grid>
+        <Grid
+          container
+          xs={4}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          direction="column"
+          item
+        >
+          <IconButton color="inherit">
+            <Link href="/chat">
+              <div className={router.pathname === "/chat" ? "active" : ""}>
+                <ChatIcon />
+                <Typography variant="subtitle2">채팅</Typography>
+              </div>
+            </Link>
+          </IconButton>
+        </Grid>
+        <Grid
+          container
+          xs={4}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          direction="column"
+          item
+        >
+          <IconButton color="inherit">
+            <Link href="/profile">
+              <div className={router.pathname === "/profile" ? "active" : ""}>
+                <PersonIcon />
+                <Typography variant="subtitle2">내정보</Typography>
+              </div>
+            </Link>
+          </IconButton>
+        </Grid>
+      </Grid>
+    </AppBar>
   );
 }

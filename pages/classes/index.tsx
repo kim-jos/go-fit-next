@@ -1,15 +1,18 @@
 import { Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+
 import { TextField, IconButton } from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Card from '../../components/Card/index';
 import ListCard from '../../components/ListCard/index';
 
 import { useState } from "react";
+
 import { getClassesList } from "../../src/services/classes.api";
 import { Classes } from "../../src/utils/database/database.entities";
 import styles from "../../styles/Home.module.css";
+
 
 
 function ClassList({ gymList }) {
@@ -30,6 +33,9 @@ function ClassList({ gymList }) {
     slidesToShow: 4,
     slidesToScroll: 4
   };
+
+
+function ClassList({ gyms }) {
 
   const showGymList = () => {
     return gyms.map((gym: Classes) => {
@@ -65,10 +71,10 @@ function ClassList({ gymList }) {
   );
 }
 
-export async function getServerSideProps() {
-  const gymList = await getClassesList();
+export async function getStaticProps() {
+  const gyms = await getClassesList();
   return {
-    props: { gymList },
+    props: { gyms },
   };
 }
 
