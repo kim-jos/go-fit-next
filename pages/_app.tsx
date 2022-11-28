@@ -14,6 +14,10 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     <SessionProvider session={session}>
       <Head>
         <link rel="shortcut icon" href="/GoFit_Logo.svg" />
+          <script
+              type="text/javascript"
+              src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=f39dcf96a0686587bcb6cca095daff28&libraries=services`}
+          />
       </Head>
       <TopAppBar />
       <Component {...pageProps} />
