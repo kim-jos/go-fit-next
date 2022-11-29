@@ -31,7 +31,14 @@ export async function getReservations(): Promise<ReservationTransactions[]> {
 
   const { data, error } = await supabaseClient
     .from(reservationTransactionTable)
-    .select("*")
+    .select(
+      `
+    *,
+    class:class_id(name),
+    classAvailability:class_time(weekday, time),
+    user:user_id(name)
+  `
+    )
     .gte("reservation_date", currDate.toISOString())
     .lt("reservation_date", thisWeek.toISOString());
 
