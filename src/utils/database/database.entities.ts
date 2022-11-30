@@ -51,3 +51,24 @@ export class Memberships {
   payment_url: string;
   recommendation: string;
 }
+export class Groups {
+  id: number;
+  title: string;
+  type: number;
+  class_id: number;
+  class_availability_id: number;
+  class_date: Date;
+  description: string;
+  limit: number;
+}
+export class GroupUsers {
+  id: number;
+  group_id: number;
+  user_id: number;
+}
+export class Messages {
+  id: number;
+  group_id: number;
+  sender_id: number;
+  message: string;
+}

@@ -59,15 +59,9 @@ export async function createReservation(
 
   const { error } = await supabaseClient
     .from(reservationTransactionTable)
-    .insert([
-      // { data: "someValue", other_column: "otherValue" }
-      data,
-    ]);
+    .insert([data]);
 
   if (error) {
-    console.log(error.details);
-    console.log(error.message);
-    console.log(error.hint);
     throw new Error(
       `POST / ${reservationTransactionTable} error: ${error.message}`
     );

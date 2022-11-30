@@ -10,7 +10,6 @@ export async function signInWithEmail(existingUser) {
   });
   console.log("sign in: ", data);
   if (error) {
-    console.log(error);
     throw new Error(error.message);
   }
   return data;
@@ -43,10 +42,9 @@ export async function signUpWithEmail(newUser) {
   return data;
 }
 
-export async function isSignedIn(): Promise<boolean> {
+export async function getCurrUser() {
   const {
     data: { user },
   } = await supabaseClient.auth.getUser();
-  if (user) return true;
-  return false;
+  return user;
 }
