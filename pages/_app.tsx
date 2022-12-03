@@ -18,11 +18,13 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     OneSignal.init({
       appId: oneSignalKey,
       allowLocalhostAsSecureOrigin: true,
+      notifyButton: {
+        enable: true,
+      },
     }).then(() => {
       OneSignal.showSlidedownPrompt();
     });
   }, []);
-
   return (
     <SessionProvider session={session}>
       {/* <Script
