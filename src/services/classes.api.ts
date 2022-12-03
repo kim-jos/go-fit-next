@@ -9,7 +9,11 @@ import {
 import { supabaseClient } from "../utils/database/supabase.key";
 
 export async function getClassesList(): Promise<Classes[]> {
-  let { data, error } = await supabaseClient.from(classesTable).select("*");
+  let { data, error } = await supabaseClient
+    .from(classesTable)
+    .select("*")
+    .order("priority", { ascending: true })
+    .filter("hide_class", "eq", false);
 
   if (error) throw new Error(`GET / ${classesTable} error: ${error.message}`);
   if (!data?.length) throw new Error("Data is empty");
