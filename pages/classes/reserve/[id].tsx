@@ -9,6 +9,7 @@ import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { getDay } from "date-fns";
 import { Form, Formik } from "formik";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 import { getClassAvailability } from "../../../src/services/classes.api";
 import { getReservations } from "../../../src/services/reservations.api";
@@ -18,8 +19,16 @@ import {
 } from "../../../src/utils/database/database.entities";
 import styles from "../../../styles/Home.module.css";
 
+// interface IClass {
+//   classAvailability: ClassAvailability[];
+//   classId: number;
+//   allReservations: ReservationTransactions[];
+// }
+
 function MakeReservation({ classAvailability, classId, allReservations }) {
   const currDate = new Date(Date.now());
+  const session = getSession().then((x) => console.log("session: ", x));
+
   const [reservedDate, setReserveDate] = useState(currDate);
   const [classTimes, setClassTimes] = useState(classAvailability);
   const [inputTime, setInputTime] = useState(classAvailability[0]);
@@ -76,7 +85,10 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
         <Formik
           initialValues={{ date: reservedDate, time: inputTime }}
           onSubmit={async (values) => {
-            handleSubmit(values.date, values.time);
+            console.log("date: ", values.date);
+            const { time } = values.time;
+            console.log("time: ", time);
+            // handleSubmit(values.date, values.time);
           }}
         >
           <Form>

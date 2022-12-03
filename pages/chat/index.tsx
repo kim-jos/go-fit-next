@@ -1,63 +1,42 @@
+import GroupsIcon from "@mui/icons-material/Groups";
+import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import {
-  Avatar,
+  Backdrop,
   Divider,
   List,
-  ListItem,
-  ListItemAvatar,
+  ListItemButton,
+  ListItemIcon,
   ListItemText,
-  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import React, { useState } from "react";
-import { getReservations } from "../../src/services/reservations.api";
-import { ReservationTransactions } from "../../src/utils/database/database.entities";
+import { getGroups } from "../../src/services/chat.api";
+import { Groups } from "../../src/utils/database/database.entities";
 
-interface Reservation {
-  allReservations: ReservationTransactions[];
-}
+const actions = [
+  { icon: <GroupsIcon />, name: "운동 파트너" },
+  { icon: <ModeCommentIcon />, name: "운동 수다방" },
+];
 
-export default function Chat({ allReservations }: Reservation) {
+export default function Chat({ groups }) {
   const [tab, setTab] = useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue);
+  const handleListItemClick = (event, index) => {
+    setSelectedIndex(index);
   };
 
-  const showReservations = () => {
-    return allReservations.map((reservation: ReservationTransactions) => {
-      return (
-        <List
-          sx={{ width: "100%", bgcolor: "background.paper" }}
-          key={reservation.id}
-        >
-          <ListItem alignItems="flex-start">
-            <ListItemAvatar>
-              <Avatar alt="Remy Sharp" />
-            </ListItemAvatar>
-            <ListItemText
-              primary="FIST 피스트"
-              secondary={
-                <React.Fragment>
-                  <Typography
-                    sx={{ display: "inline" }}
-                    component="span"
-                    variant="body2"
-                    color="text.primary"
-                  >
-                    {`${reservation.reservation_date}`}
-                  </Typography>
-                </React.Fragment>
-              }
-            />
-          </ListItem>
-          <Divider variant="middle" component="li" />
-        </List>
-      );
-    });
-  };
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleChange = (_, newValue) => setTab(newValue);
 
+  const createChatGroup = () => {};
   return (
     <>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
@@ -67,16 +46,62 @@ export default function Chat({ allReservations }: Reservation) {
         </Tabs>
       </Box>
 
-      {tab ? showReservations() : null}
+      {groups
+        ? groups.map((group: Groups) => {
+            return (
+              <Box
+                key={group.id}
+                sx={{
+                  width: "100%",
+                  maxWidth: 360,
+                }}
+              >
+                <List component="nav" aria-label="main mailbox folders">
+                  <ListItemButton
+                    selected={selectedIndex === 0}
+                    onClick={(event) => handleListItemClick(event, 0)}
+                  >
+                    <ListItemIcon>
+                      <GroupsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={group.title} />
+                  </ListItemButton>
+                </List>
+                <Divider />
+              </Box>
+            );
+          })
+        : null}
+
+      <Box sx={{ height: "80vh", transform: "translateZ(0px)", flexGrow: 1 }}>
+        <Backdrop open={open} />
+        <SpeedDial
+          ariaLabel="Create Chat"
+          sx={{ position: "absolute", bottom: 100, right: 30 }}
+          icon={<SpeedDialIcon />}
+          onClose={handleClose}
+          onOpen={handleOpen}
+          open={open}
+        >
+          {actions.map((action) => (
+            <SpeedDialAction
+              key={action.name}
+              icon={action.icon}
+              tooltipTitle={action.name}
+              tooltipOpen
+              onClick={handleClose}
+            />
+          ))}
+        </SpeedDial>
+      </Box>
     </>
   );
 }
 
 export async function getStaticProps() {
-  const allReservations = await getReservations();
-  console.log("all reservations: ", allReservations);
+  const groups = await getGroups();
 
   return {
-    props: { allReservations },
+    props: { groups },
   };
 }

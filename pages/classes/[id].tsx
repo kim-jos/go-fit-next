@@ -1,13 +1,41 @@
-import { Button, Rating, Typography } from "@mui/material";
+import { Box, Button, Rating, Typography } from "@mui/material";
 import Link from "next/link";
+import Carousel from "nuka-carousel";
 import { useState } from "react";
 import { getClass, getClassesList } from "../../src/services/classes.api";
 import { Classes } from "../../src/utils/database/database.entities";
 
-function ClassDetails({ gym }) {
+interface Gym {
+  gym: Classes;
+}
+
+function ClassDetails({ gym }: Gym) {
   let [rating, setRating] = useState(0);
   return (
     <>
+      <Box sx={{ height: "200px" }}>
+        <Carousel
+          renderTopCenterControls={({ currentSlide }) => (
+            <div>Slide: {currentSlide}</div>
+          )}
+          adaptiveHeight={true}
+          wrapAround={true}
+        >
+          <img
+            alt="Picture of the author"
+            src="https://mui.com/static/images/cards/contemplative-reptile.jpg"
+            width={500}
+            height={300}
+          />
+          <img
+            alt="Picture of the author"
+            src="https://thumbs.dreamstime.com/b/cuban-rock-iguana-cyclura-nubila-also-known-as-ground-81402959.jpg"
+            width={500}
+            height={300}
+          />
+        </Carousel>
+      </Box>
+
       <div>{gym.name}</div>
       <Button variant="contained">
         <Link href={`/classes/reserve/${encodeURIComponent(gym.id)}`}>

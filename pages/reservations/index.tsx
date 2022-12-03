@@ -1,54 +1,72 @@
-import { Button } from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { getClassesList } from "../../src/services/classes.api";
-import { Classes } from "../../src/utils/database/database.entities";
-import styles from "../../styles/Home.module.css";
+import {
+  Avatar,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography
+} from "@mui/material";
+import React from "react";
+import { getReservations } from "../../src/services/reservations.api";
+interface IReserve {
+  id: number;
+  created_at: Date;
+  user_id: number;
+  class_id: number;
+  reservation_date: Date;
+  class_time: number;
+  class: { name: string };
+  classAvailability: { weekday: number; time: Date };
+  user: { name: string };
+}
+interface Reservations {
+  allReservations: IReserve[];
+}
 
-function MyReservationsList({ gymList }) {
-  let [gyms, setGyms] = useState(gymList);
-
-  const showGymList = () => {
-    return gyms.map((gym: Classes) => {
+function ReservationsList({ allReservations }: Reservations) {
+  const showReservations = () => {
+    return allReservations.map((reservation: IReserve) => {
       return (
-        <Button key={gym.id}>
-          <Link href={`/classes/${encodeURIComponent(gym.id)}`}>
-            {gym.name}
-          </Link>
-        </Button>
+        <List
+          sx={{ width: "100%", bgcolor: "background.paper" }}
+          key={reservation.id}
+        >
+          <ListItem alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar alt="Remy Sharp" />
+            </ListItemAvatar>
+            <ListItemText
+              primary={reservation.user.name}
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    sx={{ display: "inline" }}
+                    component="span"
+                    variant="body2"
+                    color="text.primary"
+                  >
+                    {`${reservation.reservation_date} ${reservation.class.name}`}
+                  </Typography>
+                </React.Fragment>
+              }
+            />
+          </ListItem>
+          <Divider variant="middle" component="li" />
+        </List>
       );
     });
   };
 
-  return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>
-        Welcome to <a href="https://nextjs.org">Next.js!</a>
-      </h1>
-
-      <main className={styles.main}>{showGymList()}</main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
-  );
+  return <>{showReservations()}</>;
 }
 export async function getServerSideProps() {
-  const gymList = await getClassesList();
+  const allReservations = await getReservations();
+  console.log("all reservations: ", allReservations);
+
   return {
-    props: { gymList },
+    props: { allReservations },
   };
 }
 
-export default MyReservationsList;
+export default ReservationsList;
