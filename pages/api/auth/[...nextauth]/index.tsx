@@ -36,9 +36,7 @@ const options = {
 
       async authorize(credentials, req) {
         const { user, session } = await signInWithEmail(credentials);
-        user["access_token"] = session.access_token;
-        console.log("login user: ", user);
-        console.log("login session: ", session);
+        // user["access_token"] = session.access_token;
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
           return user;
