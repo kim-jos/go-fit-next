@@ -51,6 +51,54 @@ export async function getReservations(): Promise<ReservationTransactions[]> {
   return data;
 }
 
+export async function cancelReservation(reservation: ReservationTransactions) {
+  // add credits
+  const { id, user_id, class_id } = reservation;
+
+  const user = await supabaseClient
+    .from(usersTable)
+    .select(`curr_credits, id`)
+    .eq("id", user_id);
+
+  if (user.error) {
+    throw new Error(user.error.message);
+  }
+
+  const gym = await supabaseClient
+    .from(classesTable)
+    .select(`credits_required, id`)
+    .eq("id", class_id);
+
+  if (gym.error) {
+    throw new Error(gym.error.message);
+  }
+
+  const userCredits = user.data[0].curr_credits;
+  const gymRequiredCredits = gym.data[0].credits_required;
+  const updatedCredits = userCredits + gymRequiredCredits;
+
+  const userUpdated = await supabaseClient
+    .from(usersTable)
+    .update({ curr_credits: updatedCredits })
+    .eq("id", user_id);
+
+  if (userUpdated.error) {
+    throw new Error(userUpdated.error.message);
+  }
+
+  // update reservation transaction status
+  const { error } = await supabaseClient
+    .from(reservationTransactionTable)
+    .update({ status: 1 })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return "cancelation successful";
+}
+
 export async function createReservation(
   data: Partial<ReservationTransactions>
 ) {
@@ -116,3 +164,5 @@ export async function subtractCredits(userId: number, classId: number) {
   }
   return updated.error;
 }
+
+export async function addCredits(userId: number, classId: number) {}

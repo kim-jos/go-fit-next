@@ -1,14 +1,19 @@
-import { Button, Divider, Stack, TextField } from "@mui/material";
+import { Button, Card, Divider, Stack, TextField } from "@mui/material";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { getDay } from "date-fns";
 import { useState } from "react";
 import { getClassAvailability } from "../../../src/services/classes.api";
-import { createReservation } from "../../../src/services/reservations.api";
+import {
+  cancelReservation,
+  createReservation,
+  getReservations,
+} from "../../../src/services/reservations.api";
 import {
   ClassAvailability,
   ReservationTransactions,
 } from "../../../src/utils/database/database.entities";
+import { isInvalidCancelation } from "../../../src/utils/validation/cancelation.validation";
 import { isValidReservationDate } from "../../../src/utils/validation/reservation.validation";
 
 function MakeReservation({ classAvailability, classId, allReservations }) {
@@ -43,17 +48,28 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
   const showReservations = (): JSX.Element[] => {
     const reservations = allReservations?.map(
       (reservation: ReservationTransactions) => (
-        <div key={reservation.id}>
+        <Card key={reservation.id} sx={{ margin: "10px" }}>
           <div>userId: {reservation.user_id}</div>
           <>
             reservation date:{" "}
             {new Date(reservation.reservation_date).toLocaleDateString("ko-KO")}
           </>
           <div>classTime: {reservation.class_time}</div>
-        </div>
+          <Button onClick={() => handleCancel(reservation)} variant="outlined">
+            Cancel
+          </Button>
+        </Card>
       )
     );
     return reservations;
+  };
+
+  const handleCancel = async (reservation: ReservationTransactions) => {
+    if (isInvalidCancelation(reservation)) {
+      throw new Error("Date is invalid");
+    }
+    await cancelReservation(reservation);
+    console.log("cancel");
   };
 
   const handleSubmit = async () => {
@@ -110,8 +126,21 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
         예약하기
       </Button>
       {inputTime ? inputTime.time : null}
+
+      <div>{showReservations()}</div>
     </>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const classId = context.params.id;
+  const currWeekday = getDay(new Date(Date.now())); //get weekday(Sun ~ Sat) of date
+  const classAvailability = await getClassAvailability(classId, currWeekday);
+  const allReservations = await getReservations();
+
+  return {
+    props: { classAvailability, classId, allReservations },
+  };
 }
 
 export default MakeReservation;

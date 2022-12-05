@@ -32,6 +32,7 @@ export class ReservationTransactions {
   class_time: number; // Partial<ClassAvailability>; // foreign key
   user_id: number; //Partial<Users>; // foreign key
   reservation_date: Date;
+  status: string;
 }
 
 export class Users {
