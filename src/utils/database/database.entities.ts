@@ -42,6 +42,7 @@ export class Users {
   email: string;
   curr_credits: number;
   phone_number: string;
+  auth_id: string;
 }
 
 export class Memberships {

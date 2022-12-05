@@ -2,6 +2,7 @@ import { Button, Card, Divider, Stack, TextField } from "@mui/material";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { getDay } from "date-fns";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { getClassAvailability } from "../../../src/services/classes.api";
 import {
@@ -17,6 +18,9 @@ import { isInvalidCancelation } from "../../../src/utils/validation/cancelation.
 import { isValidReservationDate } from "../../../src/utils/validation/reservation.validation";
 
 function MakeReservation({ classAvailability, classId, allReservations }) {
+  const {
+    data: { user },
+  } = useSession();
   const currDate = new Date(Date.now());
 
   const [reservedDate, setReserveDate] = useState(currDate);
@@ -81,7 +85,7 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
       reservation_date: reservedDate,
       class_time: inputTime.id,
       class_id: classId,
-      user_id: 2,
+      user_id: user.user_id,
     });
   };
 

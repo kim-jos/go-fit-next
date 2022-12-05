@@ -14,16 +14,20 @@ import { signUpWithEmail } from "../../src/services/auth.api";
 import { theme } from "../../styles/themes";
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const newUser = {
-      name: data.get("name"),
-      phone: data.get("phone"),
-      email: data.get("email"),
-      password: data.get("password"),
-    };
-    signUpWithEmail(newUser);
+
+    if (data.get("password") === data.get("password1")) {
+      const newUser = {
+        name: data.get("name"),
+        phone: data.get("phone"),
+        email: data.get("email"),
+        password: data.get("password"),
+      };
+      await signUpWithEmail(newUser);
+    }
+    console.log("password error");
   };
 
   return (
@@ -47,7 +51,7 @@ export default function SignUp() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={async (e) => await handleSubmit(e)}
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
@@ -90,6 +94,17 @@ export default function SignUp() {
                   label="Password"
                   type="password"
                   id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password1"
+                  label="Password"
+                  type="password"
+                  id="password1"
                   autoComplete="new-password"
                 />
               </Grid>
