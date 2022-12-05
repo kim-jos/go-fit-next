@@ -14,13 +14,13 @@ import {
   ClassAvailability,
   ReservationTransactions,
 } from "../../../src/utils/database/database.entities";
+import { SessionUser } from "../../../src/utils/session.type";
 import { isInvalidCancelation } from "../../../src/utils/validation/cancelation.validation";
 import { isValidReservationDate } from "../../../src/utils/validation/reservation.validation";
 
 function MakeReservation({ classAvailability, classId, allReservations }) {
-  const {
-    data: { user },
-  } = useSession();
+  const { data } = useSession();
+  const user: SessionUser = data?.user;
   const currDate = new Date(Date.now());
 
   const [reservedDate, setReserveDate] = useState(currDate);
