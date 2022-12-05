@@ -52,14 +52,13 @@ export async function getReservations(): Promise<ReservationTransactions[]> {
 }
 
 export async function createReservation(
-  data: Partial<ReservationTransactions>,
-  currUser
+  data: Partial<ReservationTransactions>
 ) {
-  await subtractCredits(currUser, data.class_id);
+  await subtractCredits(data.user_id, data.class_id);
 
   const { error } = await supabaseClient
     .from(reservationTransactionTable)
-    .insert([data]);
+    .insert(data);
 
   if (error) {
     throw new Error(
@@ -67,18 +66,20 @@ export async function createReservation(
     );
   }
 
+  console.log("created reservation");
+
   return "Reservation Successful";
 }
 
 export async function subtractCredits(userId: number, classId: number) {
   const userData = await supabaseClient
     .from(usersTable)
-    .select("curr_credits")
+    .select("curr_credits, id")
     .eq("id", userId);
 
   const classData = await supabaseClient
     .from(classesTable)
-    .select("credits_required")
+    .select("credits_required, id")
     .eq("id", classId);
 
   const user = userData.data;
@@ -113,4 +114,5 @@ export async function subtractCredits(userId: number, classId: number) {
   if (updated.error) {
     throw new Error(updated.error.message);
   }
+  return updated.error;
 }
