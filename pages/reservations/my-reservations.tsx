@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { useSession } from "next-auth/react";
 import React from "react";
-import { getCurrUser } from "../../src/services/auth.api";
 import { getReservations } from "../../src/services/reservations.api";
 
 interface IReserve {
@@ -27,8 +26,11 @@ interface Reservations {
   allReservations: IReserve[];
 }
 
-function MyReservationsList({ allReservations, user }: any) {
-  const { data, status } = useSession();
+function MyReservationsList({ allReservations }: any) {
+  const {
+    data: { user },
+    status,
+  } = useSession();
 
   const showReservations = () => {
     return allReservations.map((reservation: IReserve) => {
@@ -66,12 +68,10 @@ function MyReservationsList({ allReservations, user }: any) {
   return <>{showReservations()}</>;
 }
 export async function getServerSideProps() {
-  const user = await getCurrUser();
   const allReservations = await getReservations();
-  //   console.log("all reservations: ", allReservations);
 
   return {
-    props: { allReservations, user },
+    props: { allReservations },
   };
 }
 
