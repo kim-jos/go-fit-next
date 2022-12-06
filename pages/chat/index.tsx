@@ -1,10 +1,6 @@
 import GroupsIcon from "@mui/icons-material/Groups";
 import ModeCommentIcon from "@mui/icons-material/ModeComment";
-import { Backdrop } from "@mui/material";
 import Box from "@mui/material/Box";
-import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialAction from "@mui/material/SpeedDialAction";
-import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import React, { useState } from "react";
@@ -36,7 +32,7 @@ export default function Chat({ groups }) {
         </Tabs>
       </Box>
 
-      <Box sx={{ height: "80vh", transform: "translateZ(0px)", flexGrow: 1 }}>
+      {/* <Box sx={{ height: "80vh", transform: "translateZ(0px)", flexGrow: 1 }}>
         <Backdrop open={open} />
         <SpeedDial
           ariaLabel="Create Chat"
@@ -56,7 +52,7 @@ export default function Chat({ groups }) {
             />
           ))}
         </SpeedDial>
-      </Box>
+      </Box> */}
     </>
   );
 }

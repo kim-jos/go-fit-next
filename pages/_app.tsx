@@ -2,18 +2,21 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { User } from "@sendbird/chat";
 import { SessionProvider } from "next-auth/react";
 import { appWithTranslation } from "next-i18next";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import OneSignal from "react-onesignal";
 import BottomNav from "../components/BottomNav";
 import TopAppBar from "../components/TopAppBar";
 import { oneSignalKey } from "../src/utils/keys";
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  const [sbUser, setSbUser] = useState<User>();
+
   useEffect(() => {
     OneSignal.init({
       appId: oneSignalKey,

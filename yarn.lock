@@ -665,6 +665,11 @@
   "resolved" "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.1.4.tgz"
   "version" "1.1.4"
 
+"@sendbird/chat@^4.1.5":
+  "integrity" "sha512-bipwVMuRxMIu6qhmFLXdMoMdtgAMvvxMFtX29jB3q/uks5aCpgsiioSnMVfNx5c8ed2oKM/WtReZg0lGdB1GqQ=="
+  "resolved" "https://registry.npmjs.org/@sendbird/chat/-/chat-4.1.5.tgz"
+  "version" "4.1.5"
+
 "@supabase/functions-js@^2.0.0":
   "integrity" "sha512-ozb7bds2yvf5k7NM2ZzUkxvsx4S4i2eRKFSJetdTADV91T65g4gCzEs9L3LUXSrghcGIkUaon03VPzOrFredqg=="
   "resolved" "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.0.0.tgz"
@@ -672,10 +677,10 @@
   dependencies:
     "cross-fetch" "^3.1.5"
 
-"@supabase/gotrue-js@^2.3.0":
-  "integrity" "sha512-e50w8LkfbxtI2SJxUbuQNM7pN+Yu3HYkvCLsidwBgivTdcoFOkhFodwLvWSVdeaxY1mH6Gm66RiKeUMn1+BAow=="
-  "resolved" "https://registry.npmjs.org/@supabase/gotrue-js/-/gotrue-js-2.3.0.tgz"
-  "version" "2.3.0"
+"@supabase/gotrue-js@^2.3.1":
+  "integrity" "sha512-OjonGyH0DvFcLAM9QrX73hSM6qXBAvgnISyOvjidUUIh9GgcYAJRWWysjN7Rn3QVpKNGQ65JE6gkuXBIGz1gcg=="
+  "resolved" "https://registry.npmjs.org/@supabase/gotrue-js/-/gotrue-js-2.4.2.tgz"
+  "version" "2.4.2"
   dependencies:
     "cross-fetch" "^3.1.5"
 
@@ -701,13 +706,13 @@
   dependencies:
     "cross-fetch" "^3.1.5"
 
-"@supabase/supabase-js@^2.1.0":
-  "integrity" "sha512-hODrAUDSC6RV6EhwuSMyhaQCF32gij0EBTceuDR+8suJsg7XcyUG0fYgeYecWIvt0nz61xAMY6E+Ywb0tJaAng=="
-  "resolved" "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.1.0.tgz"
-  "version" "2.1.0"
+"@supabase/supabase-js@^2.1.1":
+  "integrity" "sha512-6uBz31zrYfXkb5f2lzSHtncLWDQG5LvuH/OrmIAJqnjvliyd1pXMCGn/03xTfnflbjMolbOva+XMrydkyIMDfQ=="
+  "resolved" "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.1.1.tgz"
+  "version" "2.1.1"
   dependencies:
     "@supabase/functions-js" "^2.0.0"
-    "@supabase/gotrue-js" "^2.3.0"
+    "@supabase/gotrue-js" "^2.3.1"
     "@supabase/postgrest-js" "^1.1.0"
     "@supabase/realtime-js" "^2.1.0"
     "@supabase/storage-js" "^2.0.0"
@@ -2130,10 +2135,10 @@
   "resolved" "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   "version" "1.4.0"
 
-"next-auth@^4.15.0":
-  "integrity" "sha512-IasNzGLM2VlmyioDdZaRwBBBm8b5xo+zbbqVWHFh0bY6iQUZ3vuudrsdHNdxkXV3LSHdKNaoWEpYr4BydB7mCw=="
-  "resolved" "https://registry.npmjs.org/next-auth/-/next-auth-4.15.0.tgz"
-  "version" "4.15.0"
+"next-auth@^4.18.0":
+  "integrity" "sha512-lqJtusYqUwDiwzO4+B+lx/vKCuf/akcdhxT5R47JmS5gvI9O6Y4CZYc8coysY7XaMGHCxfttvTSEw76RA8gNTg=="
+  "resolved" "https://registry.npmjs.org/next-auth/-/next-auth-4.18.0.tgz"
+  "version" "4.18.0"
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@panva/hkdf" "^1.0.1"
@@ -2161,7 +2166,7 @@
   "resolved" "https://registry.npmjs.org/next-tick/-/next-tick-1.1.0.tgz"
   "version" "1.1.0"
 
-"next@^12.2.5", "next@>= 12.0.0", "next@12.2.5":
+"next@^12.2.5 || ^13", "next@>= 12.0.0", "next@12.2.5":
   "integrity" "sha512-tBdjqX5XC/oFs/6gxrZhjmiq90YWizUYU6qOWAfat7zJwrwapJ+BYgX2PmiacunXMaRpeVT4vz5MSPSLgNkrpA=="
   "resolved" "https://registry.npmjs.org/next/-/next-12.2.5.tgz"
   "version" "12.2.5"
