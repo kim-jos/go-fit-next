@@ -1,7 +1,7 @@
 import React from 'react';
 import {JSXElement} from "@babel/types";
-import styles from './card.module.css';
 import Link from "next/link";
+import {CardWrapper, CardName,CardAddress } from '../../styles/component/card';
 
 type ContentsType = {
     themeIcon: JSXElement | null,
@@ -11,17 +11,14 @@ type ContentsType = {
     credit: number;
 }
 
-const CardComponent = ({contents, link}) => {
+const CardComponent = ({data, contents, link}) => {
     return (
-        <Link href={link}>
-            <div className={styles.cardWrapper}>
-                <figure className={styles.themeIcon}>
-                    <img src={contents.themeIcon} alt='icon' />
-                </figure>
-                <span>{contents.title}</span>
-                <span>{contents.address}</span>
-            </div>
-        </Link>
+            <Link href={link}>
+                <CardWrapper>
+                    <CardName>{data.name}</CardName>
+                    <CardAddress>{data.address}</CardAddress>
+                </CardWrapper>
+            </Link>
     )
 }
 

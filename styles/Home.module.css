@@ -108,6 +108,12 @@
   margin-left: 0.5rem;
 }
 
+.classListTitle {
+  margin-top: 10px;
+  font-weight: bold;
+  color: black
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;

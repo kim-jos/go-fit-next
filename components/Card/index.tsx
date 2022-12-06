@@ -1,20 +1,19 @@
 import React from 'react';
 import CardComponent from "./CardComponent";
-import styles from './card.module.css';
-
+import {SwipeWrapper} from '../../styles/component/card';
 import { Classes } from "../../src/utils/database/database.entities";
 
-const Card = ({gyms}) => {
+const Card = ({gyms, contents}) => {
     return (
-        <div className={styles.swipeWrapper}>
+        <SwipeWrapper>
             {
                 gyms.map((gym: Classes, idx) => {
                     return(
-                        <CardComponent contents={gym} link={`/classes/${encodeURIComponent(gym.id)}`} key={idx}/>
+                        <CardComponent data={gym} contents={contents} link={`/classes/${encodeURIComponent(gym.id)}`} key={idx}/>
                     )
                 })
             }
-        </div>
+         </SwipeWrapper>
     )
 }
 
