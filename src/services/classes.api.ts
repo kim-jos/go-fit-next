@@ -4,6 +4,7 @@ import {
 } from "../utils/database/database.entities";
 import {
   classAvailabilityTable,
+  classesImagesTable,
   classesTable,
 } from "../utils/database/database.table.names";
 import { supabaseClient } from "../utils/database/supabase.key";
@@ -31,6 +32,17 @@ export async function getClass(id: number): Promise<Classes> {
   return data[0];
 }
 
+export async function getClassImages(classId: number) {
+  let { data, error } = await supabaseClient
+    .from(classesImagesTable)
+    .select("url")
+    .eq("class_id", classId);
+
+  if (error)
+    throw new Error(`GET / ${classesImagesTable} error: ${error.message}`);
+  return data;
+}
+
 export async function getClassAvailability(
   classId: number,
   weekday: number
@@ -48,17 +60,3 @@ export async function getClassAvailability(
   if (!data?.length) console.log("Data is empty");
   return data;
 }
-
-// export async function getClassDetails(classId: number): Promise<ClassDetails> {
-//   let { data, error } = await supabaseClient
-//     .from<ClassDetails>(classDetailsTableName)
-//     .select(
-//       `
-//         *,
-//         ${classesTableName} (
-//           name, exercise_type
-//         )
-//       `
-//     )
-//     .eq("classes_id", classId);
-// }

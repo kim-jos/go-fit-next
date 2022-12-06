@@ -18,6 +18,13 @@ export class Classes {
   hide_class: boolean;
 }
 
+export class ClassImages {
+  id: number;
+  class_id: number;
+  url: string;
+  created_at: Date;
+}
+
 export class ClassAvailability {
   id: number;
   class_id: Partial<Classes>; // foreign key

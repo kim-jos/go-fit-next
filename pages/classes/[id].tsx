@@ -1,79 +1,48 @@
-import { Box, Button, Card, Rating, Typography } from "@mui/material";
 import Link from "next/link";
-import Carousel from "nuka-carousel";
-import { useState } from "react";
-import { getClass } from "../../src/services/classes.api";
-import { getReservations } from "../../src/services/reservations.api";
+import ImgSlider from "../../components/Carousel";
+import { getClass, getClassImages } from "../../src/services/classes.api";
 import {
   Classes,
-  ReservationTransactions,
+  ClassImages,
 } from "../../src/utils/database/database.entities";
+import {
+  ClassButton,
+  ClassDetailWrapper,
+  InfoWrapper,
+} from "../../styles/card.styles";
 
 interface Gym {
   gym: Classes;
-  allReservations: ReservationTransactions[];
+  gymImages: ClassImages;
+  // allReservations: ReservationTransactions[];
 }
 
-function ClassDetails({ gym, allReservations }: Gym) {
-  let [rating, setRating] = useState(0);
-
-  const showReservations = () => {
-    const reservations = allReservations?.map(
-      (reservation: ReservationTransactions) => (
-        <Card key={reservation.id} sx={{ margin: "10px" }}>
-          <div>userId: {reservation.user_id}</div>
-          <>
-            reservation date:{" "}
-            {new Date(reservation.reservation_date).toLocaleDateString("ko-KO")}
-          </>
-          <div>classTime: {reservation.class_time}</div>
-        </Card>
-      )
-    );
-    return reservations;
-  };
-
+function ClassDetails({ gym, gymImages }: Gym) {
   return (
     <>
-      <Box sx={{ height: "200px" }}>
-        <Carousel
-          renderTopCenterControls={({ currentSlide }) => (
-            <div>Slide: {currentSlide}</div>
-          )}
-          adaptiveHeight={true}
-          wrapAround={true}
+      <ImgSlider images={gymImages} />
+      <ClassDetailWrapper>
+        <span className="title">{gym.name}</span>
+        <span className="description">{gym.description}</span>
+      </ClassDetailWrapper>
+      <InfoWrapper>
+        <span className="title">수업 유형</span>
+        <span className="content">{gym.exercise_type}</span>
+        <span className="title">소요시간</span>
+        <span className="content">{gym.duration}</span>
+        <span className="title">수업 준비물</span>
+        <span className="content">{gym.requirements}</span>
+        <span className="title">소요 크레딧</span>
+        <span className="content">{gym.credits_required}</span>
+      </InfoWrapper>
+      <ClassButton variant="contained" style={{ marginBottom: 70 }}>
+        <Link
+          href={`/classes/reserve/${encodeURIComponent(gym.id)}`}
+          className="Link"
         >
-          <img
-            alt="Picture of the author"
-            src="https://mui.com/static/images/cards/contemplative-reptile.jpg"
-            width={500}
-            height={300}
-          />
-          <img
-            alt="Picture of the author"
-            src="https://thumbs.dreamstime.com/b/cuban-rock-iguana-cyclura-nubila-also-known-as-ground-81402959.jpg"
-            width={500}
-            height={300}
-          />
-        </Carousel>
-      </Box>
-
-      <div>{gym.name}</div>
-      <Button variant="contained">
-        <Link href={`/classes/reserve/${encodeURIComponent(gym.id)}`}>
           예약하기
         </Link>
-      </Button>
-
-      <Typography component="legend">리뷰 남겨주세요!</Typography>
-      <Rating
-        name="simple-controlled"
-        value={rating}
-        precision={0.5}
-        onChange={(event, newValue) => {
-          setRating(newValue);
-        }}
-      />
+      </ClassButton>
     </>
   );
 }
@@ -91,10 +60,12 @@ function ClassDetails({ gym, allReservations }: Gym) {
 // }
 
 export async function getServerSideProps({ params }) {
-  const gym = await getClass(Number(params.id));
-  const allReservations = await getReservations();
+  const classId = Number(params.id);
+  const gym = await getClass(classId);
+  const gymImages = await getClassImages(classId);
+  // const allReservations = await getReservations();
   return {
-    props: { gym, allReservations },
+    props: { gym, gymImages },
   };
 }
 
