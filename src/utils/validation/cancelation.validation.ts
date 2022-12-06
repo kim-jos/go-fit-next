@@ -22,8 +22,8 @@ export async function isInvalidCancelation(
   const date = new Date(reservation.reservation_date);
 
   date.setHours(Number(hours[0]), Number(hours[1]), Number(hours[2]));
-  const validTime = differenceInMinutes(date, currDate) < 60 * 24;
+  const validTime = differenceInMinutes(date, currDate) >= 60 * 24;
 
-  if (validTime) return false;
-  return true;
+  if (validTime) return false; // it is a valid time;
+  return true; // it is a invalid time
 }

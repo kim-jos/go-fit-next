@@ -1,34 +1,29 @@
-import { Button, Card, Divider, Stack, TextField } from "@mui/material";
+import { Button, Divider, Stack, TextField } from "@mui/material";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { getDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import ErrorSnackBar from "../../../components/ErrorSnackBar";
 import { getClassAvailability } from "../../../src/services/classes.api";
-import {
-  cancelReservation,
-  createReservation,
-  getReservations,
-} from "../../../src/services/reservations.api";
-import {
-  ClassAvailability,
-  ReservationTransactions,
-} from "../../../src/utils/database/database.entities";
+import { createReservation } from "../../../src/services/reservations.api";
+import { ClassAvailability } from "../../../src/utils/database/database.entities";
+import { ReservationStatus } from "../../../src/utils/enum";
 import { SessionUser } from "../../../src/utils/session.type";
-import { isInvalidCancelation } from "../../../src/utils/validation/cancelation.validation";
 import { isValidReservationDate } from "../../../src/utils/validation/reservation.validation";
 
-function MakeReservation({ classAvailability, classId, allReservations }) {
-  const { data } = useSession();
-  const user: SessionUser = data?.user;
+function MakeReservation({ classAvailability, classId }) {
   const currDate = new Date(Date.now());
-
+  const [error, setError] = useState<string>();
   const [reservedDate, setReserveDate] = useState(currDate);
   const [classTimes, setClassTimes] =
     useState<Partial<ClassAvailability>[]>(classAvailability);
   const [inputTime, setInputTime] = useState<ClassAvailability>(
     classAvailability[0]
   );
+
+  const { data } = useSession();
+  const user: SessionUser = data?.user;
 
   const twoWeeksFromNow = new Date();
   twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 13);
@@ -49,35 +44,9 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
     setClassTimes(newClassTimes);
   };
 
-  const showReservations = (): JSX.Element[] => {
-    const reservations = allReservations?.map(
-      (reservation: ReservationTransactions) => (
-        <Card key={reservation.id} sx={{ margin: "10px" }}>
-          <div>userId: {reservation.user_id}</div>
-          <>
-            reservation date:{" "}
-            {new Date(reservation.reservation_date).toLocaleDateString("ko-KO")}
-          </>
-          <div>classTime: {reservation.class_time}</div>
-          <Button onClick={() => handleCancel(reservation)} variant="outlined">
-            Cancel
-          </Button>
-        </Card>
-      )
-    );
-    return reservations;
-  };
-
-  const handleCancel = async (reservation: ReservationTransactions) => {
-    if (isInvalidCancelation(reservation)) {
-      throw new Error("Date is invalid");
-    }
-    await cancelReservation(reservation);
-    console.log("cancel");
-  };
-
   const handleSubmit = async () => {
     if (!isValidReservationDate(reservedDate, inputTime)) {
+      setError("Date is invalid");
       throw new Error("Date is invalid");
     }
 
@@ -86,6 +55,7 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
       class_time: inputTime.id,
       class_id: classId,
       user_id: user.user_id,
+      status: ReservationStatus.VALID,
     });
   };
 
@@ -95,6 +65,7 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
 
   return (
     <>
+      <Button onClick={() => setError("im a problem")}>click me</Button>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <MobileDatePicker
           minDate={currDate}
@@ -131,7 +102,7 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
       </Button>
       {inputTime ? inputTime.time : null}
 
-      <div>{showReservations()}</div>
+      {error ? <ErrorSnackBar error={error} /> : null}
     </>
   );
 }
@@ -140,10 +111,8 @@ export async function getServerSideProps(context: any) {
   const classId = context.params.id;
   const currWeekday = getDay(new Date(Date.now())); //get weekday(Sun ~ Sat) of date
   const classAvailability = await getClassAvailability(classId, currWeekday);
-  const allReservations = await getReservations();
-
   return {
-    props: { classAvailability, classId, allReservations },
+    props: { classAvailability, classId },
   };
 }
 

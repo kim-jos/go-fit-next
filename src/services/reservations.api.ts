@@ -5,14 +5,24 @@ import {
   usersTable,
 } from "../utils/database/database.table.names";
 import { supabaseClient } from "../utils/database/supabase.key";
+import { ReservationStatus } from "../utils/enum";
 
 export async function getUserReservations(
-  currUser
+  userId
 ): Promise<ReservationTransactions[]> {
+  console.log("userId: ", userId);
   const { data, error } = await supabaseClient
     .from(reservationTransactionTable)
-    .select("*")
-    .eq("user_id", currUser) // TODO: add logged in user instance
+    .select(
+      `
+    *,
+    class:class_id(name),
+    classAvailability:class_time(weekday, time),
+    user:user_id(name)
+  `
+    )
+    .eq("user_id", userId)
+    .neq("status", ReservationStatus.CANCELED)
     .order("reservation_date", { ascending: true });
 
   if (error) {
@@ -52,7 +62,6 @@ export async function getReservations(): Promise<ReservationTransactions[]> {
 }
 
 export async function cancelReservation(reservation: ReservationTransactions) {
-  // add credits
   const { id, user_id, class_id } = reservation;
 
   const user = await supabaseClient
@@ -77,6 +86,7 @@ export async function cancelReservation(reservation: ReservationTransactions) {
   const gymRequiredCredits = gym.data[0].credits_required;
   const updatedCredits = userCredits + gymRequiredCredits;
 
+  // add credits
   const userUpdated = await supabaseClient
     .from(usersTable)
     .update({ curr_credits: updatedCredits })

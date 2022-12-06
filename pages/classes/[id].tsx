@@ -1,16 +1,38 @@
-import { Box, Button, Rating, Typography } from "@mui/material";
+import { Box, Button, Card, Rating, Typography } from "@mui/material";
 import Link from "next/link";
 import Carousel from "nuka-carousel";
 import { useState } from "react";
-import { getClass, getClassesList } from "../../src/services/classes.api";
-import { Classes } from "../../src/utils/database/database.entities";
+import { getClass } from "../../src/services/classes.api";
+import { getReservations } from "../../src/services/reservations.api";
+import {
+  Classes,
+  ReservationTransactions,
+} from "../../src/utils/database/database.entities";
 
 interface Gym {
   gym: Classes;
+  allReservations: ReservationTransactions[];
 }
 
-function ClassDetails({ gym }: Gym) {
+function ClassDetails({ gym, allReservations }: Gym) {
   let [rating, setRating] = useState(0);
+
+  const showReservations = () => {
+    const reservations = allReservations?.map(
+      (reservation: ReservationTransactions) => (
+        <Card key={reservation.id} sx={{ margin: "10px" }}>
+          <div>userId: {reservation.user_id}</div>
+          <>
+            reservation date:{" "}
+            {new Date(reservation.reservation_date).toLocaleDateString("ko-KO")}
+          </>
+          <div>classTime: {reservation.class_time}</div>
+        </Card>
+      )
+    );
+    return reservations;
+  };
+
   return (
     <>
       <Box sx={{ height: "200px" }}>
@@ -56,22 +78,23 @@ function ClassDetails({ gym }: Gym) {
   );
 }
 
-export async function getStaticPaths() {
-  const gyms = await getClassesList();
-  const paths = gyms.map((gym: Classes) => ({
-    params: { id: `${gym.id}` },
-  }));
+// export async function getStaticPaths() {
+//   const gyms = await getClassesList();
+//   const paths = gyms.map((gym: Classes) => ({
+//     params: { id: `${gym.id}` },
+//   }));
 
-  return {
-    paths,
-    fallback: false,
-  };
-}
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const gym = await getClass(Number(params.id));
+  const allReservations = await getReservations();
   return {
-    props: { gym },
+    props: { gym, allReservations },
   };
 }
 

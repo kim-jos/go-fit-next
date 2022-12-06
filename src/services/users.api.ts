@@ -9,3 +9,14 @@ export async function createUser(data: Partial<Users>) {
 
   return error;
 }
+
+export async function getUserCredits(userId: number) {
+  const { data, error } = await supabaseClient
+    .from(usersTable)
+    .select("curr_credits, id")
+    .eq("id", userId);
+
+  if (error) throw new Error(`${error.message}`);
+
+  return data[0];
+}

@@ -5,10 +5,12 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Typography
+  Typography,
 } from "@mui/material";
+import { useSession } from "next-auth/react";
 import React from "react";
 import { getReservations } from "../../src/services/reservations.api";
+import { SessionUser } from "../../src/utils/session.type";
 interface IReserve {
   id: number;
   created_at: Date;
@@ -25,6 +27,9 @@ interface Reservations {
 }
 
 function ReservationsList({ allReservations }: Reservations) {
+  const { data } = useSession();
+  const user: SessionUser = data?.user;
+
   const showReservations = () => {
     return allReservations.map((reservation: IReserve) => {
       return (
