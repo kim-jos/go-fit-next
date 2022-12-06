@@ -1,4 +1,5 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Alert } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,29 +11,43 @@ import { ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useState } from "react";
 import { signUpWithEmail } from "../../src/services/auth.api";
 import { theme } from "../../styles/themes";
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [isValidPassword, setIsValidPassword] = useState(true);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const newUser = {
-      name: data.get("name"),
-      phone: data.get("phone"),
-      email: data.get("email"),
-      password: data.get("password"),
-    };
-    signUpWithEmail(newUser);
+    if (data.get("password") !== data.get("password1")) {
+      setIsValidPassword(false);
+      console.log("error password");
+      throw new Error("비밀번호 에러");
+    }
+
+    if (isValidPassword) {
+      const newUser = {
+        name: data.get("name"),
+        phone: data.get("phone"),
+        email: data.get("email"),
+        password: data.get("password"),
+      };
+      await signUpWithEmail(newUser);
+    }
   };
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+        {!isValidPassword ? (
+          <Alert severity="error">비밀번호를 다시 입력해주세요!</Alert>
+        ) : null}
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 1,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -42,12 +57,12 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            회원가입
           </Typography>
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={async (e) => await handleSubmit(e)}
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
@@ -58,7 +73,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="name"
-                  label="Name"
+                  label="이름"
                   autoFocus
                 />
               </Grid>
@@ -67,7 +82,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="phone"
-                  label="Phone Number"
+                  label="전화번호"
                   name="phone"
                   autoComplete="phone"
                 />
@@ -77,7 +92,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="이메일"
                   name="email"
                   autoComplete="email"
                 />
@@ -87,9 +102,20 @@ export default function SignUp() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="비밀번호"
                   type="password"
                   id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password1"
+                  label="비밀번호 다시 입력"
+                  type="password"
+                  id="password1"
                   autoComplete="new-password"
                 />
               </Grid>
@@ -100,17 +126,18 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              회원가입
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid container justifyContent="center">
               <Grid item>
                 <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                  로그인 하기
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
+        <Box sx={{ marginBottom: "100px" }}></Box>
       </Container>
     </ThemeProvider>
   );

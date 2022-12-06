@@ -24,7 +24,7 @@ function ClassList({ gymList }: Gym) {
       {gyms.map((gym: Classes) => {
         return (
           <Link key={gym.id} href={`/classes/${encodeURIComponent(gym.id)}`}>
-            <Card sx={{ maxWidth: 345, marginBottom: "10px", display: "flex" }}>
+            <Card sx={{ marginBottom: "10px", display: "flex" }}>
               <CardActionArea>
                 <CardMedia
                   component="img"

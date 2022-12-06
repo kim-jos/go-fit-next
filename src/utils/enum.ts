@@ -9,3 +9,13 @@ export enum Weekday {
   "FRI" = 5,
   "SAT" = 6,
 }
+
+export enum Role {
+  "MEMBER",
+  "ADMIN",
+}
+
+export enum ReservationStatus {
+  "VALID",
+  "CANCELED",
+}

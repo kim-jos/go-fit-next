@@ -1,4 +1,4 @@
-import { Role } from "../role.enum";
+import { Role } from "../enum";
 
 export class Classes {
   id: number;
@@ -29,9 +29,10 @@ export class ClassAvailability {
 export class ReservationTransactions {
   id: number;
   class_id: number; //Partial<Classes>; // foreign key
-  class_time: string; // Partial<ClassAvailability>; // foreign key
+  class_time: number; // Partial<ClassAvailability>; // foreign key
   user_id: number; //Partial<Users>; // foreign key
   reservation_date: Date;
+  status: number;
 }
 
 export class Users {
@@ -41,6 +42,7 @@ export class Users {
   email: string;
   curr_credits: number;
   phone_number: string;
+  auth_id: string;
 }
 
 export class Memberships {
@@ -51,24 +53,24 @@ export class Memberships {
   payment_url: string;
   recommendation: string;
 }
-export class Groups {
-  id: number;
-  title: string;
-  type: number;
-  class_id: number;
-  class_availability_id: number;
-  class_date: Date;
-  description: string;
-  limit: number;
-}
-export class GroupUsers {
-  id: number;
-  group_id: number;
-  user_id: number;
-}
-export class Messages {
-  id: number;
-  group_id: number;
-  sender_id: number;
-  message: string;
-}
+// export class Groups {
+//   id: number;
+//   title: string;
+//   type: number;
+//   class_id: number;
+//   class_availability_id: number;
+//   class_date: Date;
+//   description: string;
+//   limit: number;
+// }
+// export class GroupUsers {
+//   id: number;
+//   group_id: number;
+//   user_id: number;
+// }
+// export class Messages {
+//   id: number;
+//   group_id: number;
+//   sender_id: number;
+//   message: string;
+// }

@@ -1,37 +1,29 @@
-import {
-  Button,
-  Divider,
-  ListItemButton,
-  ListItemText,
-  TextField,
-} from "@mui/material";
+import { Button, Divider, Stack, TextField } from "@mui/material";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { getDay } from "date-fns";
-import { Form, Formik } from "formik";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
+import ErrorSnackBar from "../../../components/ErrorSnackBar";
 import { getClassAvailability } from "../../../src/services/classes.api";
-import { getReservations } from "../../../src/services/reservations.api";
-import {
-  ClassAvailability,
-  ReservationTransactions,
-} from "../../../src/utils/database/database.entities";
-import styles from "../../../styles/Home.module.css";
+import { createReservation } from "../../../src/services/reservations.api";
+import { ClassAvailability } from "../../../src/utils/database/database.entities";
+import { ReservationStatus } from "../../../src/utils/enum";
+import { SessionUser } from "../../../src/utils/session.type";
+import { isValidReservationDate } from "../../../src/utils/validation/reservation.validation";
 
-// interface IClass {
-//   classAvailability: ClassAvailability[];
-//   classId: number;
-//   allReservations: ReservationTransactions[];
-// }
-
-function MakeReservation({ classAvailability, classId, allReservations }) {
+function MakeReservation({ classAvailability, classId }) {
   const currDate = new Date(Date.now());
-  const session = getSession().then((x) => console.log("session: ", x));
-
+  const [error, setError] = useState<string>();
   const [reservedDate, setReserveDate] = useState(currDate);
-  const [classTimes, setClassTimes] = useState(classAvailability);
-  const [inputTime, setInputTime] = useState(classAvailability[0]);
+  const [classTimes, setClassTimes] =
+    useState<Partial<ClassAvailability>[]>(classAvailability);
+  const [inputTime, setInputTime] = useState<ClassAvailability>(
+    classAvailability[0]
+  );
+
+  const { data } = useSession();
+  const user: SessionUser = data?.user;
 
   const twoWeeksFromNow = new Date();
   twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 13);
@@ -52,72 +44,65 @@ function MakeReservation({ classAvailability, classId, allReservations }) {
     setClassTimes(newClassTimes);
   };
 
-  const showClassAvailableTimes = () => {
-    return classTimes.map((classTime: ClassAvailability) => (
-      <div key={classTime.id}>
-        <ListItemButton onClick={(time) => setInputTime(time)}>
-          <ListItemText>{`${classTime.time}`}</ListItemText>
-        </ListItemButton>
-        <Divider />
-      </div>
-    ));
+  const handleSubmit = async () => {
+    if (!isValidReservationDate(reservedDate, inputTime)) {
+      setError("Date is invalid");
+      throw new Error("Date is invalid");
+    }
+
+    await createReservation({
+      reservation_date: reservedDate,
+      class_time: inputTime.id,
+      class_id: classId,
+      user_id: user.user_id,
+      status: ReservationStatus.VALID,
+    });
   };
 
-  const showReservations = () => {
-    return allReservations?.map((reservation: ReservationTransactions) => (
-      <div key={reservation.id}>
-        <div>{reservation.user_id}</div>
-      </div>
-    ));
-  };
-
-  const handleSubmit = (date, time) => {
-    // if (!isValidReservationDate(reservedDate, time)) {
-    //   throw new Error("Date is invalid");
-    // }
-    console.log(`handleSubmit: ${date}, ${time}`);
-    // createReservation({ reservation_date: date, class_time: time }, 1);
+  const handleClick = (classAvailability) => {
+    setInputTime(classAvailability);
   };
 
   return (
     <>
-      <div className={styles.container}>
-        <Formik
-          initialValues={{ date: reservedDate, time: inputTime }}
-          onSubmit={async (values) => {
-            console.log("date: ", values.date);
-            const { time } = values.time;
-            console.log("time: ", time);
-            // handleSubmit(values.date, values.time);
+      <Button onClick={() => setError("im a problem")}>click me</Button>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <MobileDatePicker
+          minDate={currDate}
+          maxDate={twoWeeksFromNow}
+          label="날짜 선택"
+          inputFormat="yyyy/MM/dd"
+          value={reservedDate}
+          onChange={(date) => {
+            setReserveDate(date);
+            getClassAvailableTimes(date);
           }}
-        >
-          <Form>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <MobileDatePicker
-                minDate={currDate}
-                maxDate={twoWeeksFromNow}
-                label="날짜 선택"
-                inputFormat="MM/dd/yyyy"
-                value={reservedDate}
-                onChange={(date) => {
-                  getClassAvailableTimes(date);
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
 
-            <div></div>
+      {classTimes.length
+        ? classTimes.map((classTime: ClassAvailability) => (
+            <div key={classTime.id}>
+              <Stack direction="column" spacing={1}>
+                <Button
+                  variant="outlined"
+                  onClick={() => handleClick(classTime)}
+                >
+                  {`${classTime.time}`}
+                </Button>
+              </Stack>
+              <Divider />
+            </div>
+          ))
+        : null}
 
-            {classTimes.length ? showClassAvailableTimes() : null}
+      <Button variant="contained" onClick={handleSubmit}>
+        예약하기
+      </Button>
+      {inputTime ? inputTime.time : null}
 
-            <Button variant="contained" type="submit">
-              예약하기
-            </Button>
-          </Form>
-        </Formik>
-        Reservations of Users
-        {allReservations.length ? showReservations() : null}
-      </div>
+      {error ? <ErrorSnackBar error={error} /> : null}
     </>
   );
 }
@@ -126,10 +111,8 @@ export async function getServerSideProps(context: any) {
   const classId = context.params.id;
   const currWeekday = getDay(new Date(Date.now())); //get weekday(Sun ~ Sat) of date
   const classAvailability = await getClassAvailability(classId, currWeekday);
-  const allReservations = await getReservations();
-
   return {
-    props: { classAvailability, classId, allReservations },
+    props: { classAvailability, classId },
   };
 }
 

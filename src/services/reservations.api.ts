@@ -5,14 +5,24 @@ import {
   usersTable,
 } from "../utils/database/database.table.names";
 import { supabaseClient } from "../utils/database/supabase.key";
+import { ReservationStatus } from "../utils/enum";
 
 export async function getUserReservations(
-  currUser
+  userId
 ): Promise<ReservationTransactions[]> {
+  console.log("userId: ", userId);
   const { data, error } = await supabaseClient
     .from(reservationTransactionTable)
-    .select("*")
-    .eq("user_id", currUser) // TODO: add logged in user instance
+    .select(
+      `
+    *,
+    class:class_id(name),
+    classAvailability:class_time(weekday, time),
+    user:user_id(name)
+  `
+    )
+    .eq("user_id", userId)
+    .neq("status", ReservationStatus.CANCELED)
     .order("reservation_date", { ascending: true });
 
   if (error) {
@@ -51,15 +61,62 @@ export async function getReservations(): Promise<ReservationTransactions[]> {
   return data;
 }
 
+export async function cancelReservation(reservation: ReservationTransactions) {
+  const { id, user_id, class_id } = reservation;
+
+  const user = await supabaseClient
+    .from(usersTable)
+    .select(`curr_credits, id`)
+    .eq("id", user_id);
+
+  if (user.error) {
+    throw new Error(user.error.message);
+  }
+
+  const gym = await supabaseClient
+    .from(classesTable)
+    .select(`credits_required, id`)
+    .eq("id", class_id);
+
+  if (gym.error) {
+    throw new Error(gym.error.message);
+  }
+
+  const userCredits = user.data[0].curr_credits;
+  const gymRequiredCredits = gym.data[0].credits_required;
+  const updatedCredits = userCredits + gymRequiredCredits;
+
+  // add credits
+  const userUpdated = await supabaseClient
+    .from(usersTable)
+    .update({ curr_credits: updatedCredits })
+    .eq("id", user_id);
+
+  if (userUpdated.error) {
+    throw new Error(userUpdated.error.message);
+  }
+
+  // update reservation transaction status
+  const { error } = await supabaseClient
+    .from(reservationTransactionTable)
+    .update({ status: 1 })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return "cancelation successful";
+}
+
 export async function createReservation(
-  data: Partial<ReservationTransactions>,
-  currUser
+  data: Partial<ReservationTransactions>
 ) {
-  await subtractCredits(currUser, data.class_id);
+  await subtractCredits(data.user_id, data.class_id);
 
   const { error } = await supabaseClient
     .from(reservationTransactionTable)
-    .insert([data]);
+    .insert(data);
 
   if (error) {
     throw new Error(
@@ -67,18 +124,20 @@ export async function createReservation(
     );
   }
 
+  console.log("created reservation");
+
   return "Reservation Successful";
 }
 
 export async function subtractCredits(userId: number, classId: number) {
   const userData = await supabaseClient
     .from(usersTable)
-    .select("curr_credits")
+    .select("curr_credits, id")
     .eq("id", userId);
 
   const classData = await supabaseClient
     .from(classesTable)
-    .select("credits_required")
+    .select("credits_required, id")
     .eq("id", classId);
 
   const user = userData.data;
@@ -113,4 +172,7 @@ export async function subtractCredits(userId: number, classId: number) {
   if (updated.error) {
     throw new Error(updated.error.message);
   }
+  return updated.error;
 }
+
+export async function addCredits(userId: number, classId: number) {}

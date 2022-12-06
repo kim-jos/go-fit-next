@@ -1,15 +1,15 @@
-import { Users } from "../utils/database/database.entities";
-import { usersTable } from "../utils/database/database.table.names";
 import { supabaseClient } from "../utils/database/supabase.key";
-import { Role } from "../utils/role.enum";
+import { Role } from "../utils/enum";
+import { createUser } from "./users.api";
 
 export async function signInWithEmail(existingUser) {
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: existingUser.email,
     password: existingUser.password,
   });
-  console.log("sign in: ", data);
+
   if (error) {
+    console.log(error.message);
     throw new Error(error.message);
   }
   return data;
@@ -18,7 +18,7 @@ export async function signInWithEmail(existingUser) {
 export async function signUpWithEmail(newUser) {
   // name, phone, email, password
 
-  let { data, error } = await supabaseClient.auth.signUp({
+  const { data, error } = await supabaseClient.auth.signUp({
     email: newUser.email,
     password: newUser.password,
   });
@@ -26,25 +26,15 @@ export async function signUpWithEmail(newUser) {
   if (error) {
     throw new Error(`message: ${error.message}, status: ${error.cause}`);
   } else {
-    const saveUser = new Users();
-    saveUser.curr_credits = 0;
-    saveUser.name = newUser.name;
-    saveUser.email = newUser.email;
-    saveUser.phone_number = newUser.phone;
-    saveUser.role = Role.MEMBER;
-
-    let newUserError = await supabaseClient.from(usersTable).insert(saveUser);
-    if (newUserError.error) {
-      throw new Error(newUserError.error.message);
-    }
+    await createUser({
+      email: newUser.email,
+      curr_credits: 0,
+      phone_number: newUser.phone,
+      name: newUser.name,
+      auth_id: data.user.id,
+      role: Role.MEMBER,
+    });
   }
 
   return data;
-}
-
-export async function getCurrUser() {
-  const {
-    data: { user },
-  } = await supabaseClient.auth.getUser();
-  return user;
 }
