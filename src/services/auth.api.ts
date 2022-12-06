@@ -1,5 +1,5 @@
 import { supabaseClient } from "../utils/database/supabase.key";
-import { Role } from "../utils/role.enum";
+import { Role } from "../utils/enum";
 import { createUser } from "./users.api";
 
 export async function signInWithEmail(existingUser) {

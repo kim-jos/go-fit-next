@@ -60,8 +60,6 @@ const options = {
     session: async ({ session, token }) => {
       if (session?.user) {
         session.user.id = token.uid;
-        console.log("token jk: ", token);
-        console.log("session jk: ", session);
         session.user.accessToken = token.jti;
         session.user.user_id = token.user_id;
       }
